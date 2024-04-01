@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tasker/widget/buttonNew.dart';
 import 'package:tasker/models/group.dart';
 
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
                 renameTask: renameTask,
               )
             ]))),
-        endDrawer: const Drawer(child: Settings()),
+        endDrawer: Drawer(child: Settings(backup: backup)),
         drawer: Drawer(
             child: GroupWidget(
           removeGroup: _removeGroup,
@@ -65,6 +66,13 @@ class _HomePageState extends State<HomePage> {
           },
           groupeId: selectedGroupId,
         ));
+  }
+
+  Future<void> backup() async {
+    DatabaseService db = DatabaseService();
+    db.generateBackup().then((String result) {
+      Share.share(result);
+    });
   }
 
   Future<void> _loadTodoFromGroup(int groupId) async {
@@ -105,7 +113,8 @@ class _HomePageState extends State<HomePage> {
     DatabaseService.removeGroup(groupId);
   }
 
-  Future<void> renameTask(Todo todo, String newName, String newDescription) async {
+  Future<void> renameTask(
+      Todo todo, String newName, String newDescription) async {
     todo.content = newName;
     todo.description = newDescription;
     DatabaseService.updateTask(todo);

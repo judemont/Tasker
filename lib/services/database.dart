@@ -1,23 +1,19 @@
 //import 'dart:js_interop';
 
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/group.dart';
 import '../models/todo.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:encrypt/encrypt.dart' as encrypt ;
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'dart:convert' as convert;
-
 
 class DatabaseService {
   static const String databaseName = "database.sqlite";
   static Database? db;
 
   static const DATABASE_VERSION = 6;
-  List<String> tables =[
-   
-  ];
+  List<String> tables = ["Todos", "Groups"];
 
   static const SECRET_KEY = "2021_PRIVATE_KEY_ENCRYPT_2021";
 
@@ -72,7 +68,6 @@ class DatabaseService {
     db.rawQuery('SELECT * FROM sqlite_master ORDER BY name;').then((value) {
       print(value);
     });
-
 
     if (oldVersion < newVersion) {
       if (oldVersion < 2) // add group table with link on todo
@@ -148,7 +143,6 @@ class DatabaseService {
     """);
 
     await database.insert('Groups', Group(name: "Default").toMap());
-
   }
 
   static Future<int> createItem(Todo todo) async {
@@ -253,71 +247,57 @@ class DatabaseService {
     db.update("Todos", todo.toMap(), where: 'id = ?', whereArgs: [todo.id]);
   }
 
-
-
-    Future<String>generateBackup({bool isEncrypted = false}) async {
-
+  Future<String> generateBackup({bool isEncrypted = false}) async {
     print('GENERATE BACKUP');
-   
+
     var dbs = await DatabaseService.initializeDb();
 
-    List data =[];
+    List data = [];
 
-    List<Map<String,dynamic>> listMaps=[];
+    List<Map<String, dynamic>> listMaps = [];
 
-    for (var i = 0; i < tables.length; i++)
-    {
-
-      listMaps = await dbs.query(tables[i]); 
+    for (var i = 0; i < tables.length; i++) {
+      listMaps = await dbs.query(tables[i]);
 
       data.add(listMaps);
-
     }
 
-    List backups=[tables,data];
+    List backups = [tables, data];
 
     String json = convert.jsonEncode(backups);
 
-    if(isEncrypted)
-    {
-
+    if (isEncrypted) {
       var key = encrypt.Key.fromUtf8(SECRET_KEY);
       var iv = encrypt.IV.fromLength(16);
       var encrypter = encrypt.Encrypter(encrypt.AES(key));
       var encrypted = encrypter.encrypt(json, iv: iv);
-        
-      return encrypted.base64;  
-    }
-    else
-    {
+
+      return encrypted.base64;
+    } else {
       return json;
     }
   }
 
-  Future<void>restoreBackup(String backup,{ bool isEncrypted = false}) async {
-
+  Future<void> restoreBackup(String backup, {bool isEncrypted = false}) async {
     var dbs = await DatabaseService.initializeDb();
-    
+
     Batch batch = dbs.batch();
-    
+
     var key = encrypt.Key.fromUtf8(SECRET_KEY);
     var iv = encrypt.IV.fromLength(16);
     var encrypter = encrypt.Encrypter(encrypt.AES(key));
 
-    List json = convert.jsonDecode(isEncrypted ? encrypter.decrypt64(backup,iv:iv):backup);
+    List json = convert
+        .jsonDecode(isEncrypted ? encrypter.decrypt64(backup, iv: iv) : backup);
 
-    for (var i = 0; i < json[0].length; i++)
-    {
-      for (var k = 0; k < json[1][i].length; k++)
-      {
-        batch.insert(json[0][i],json[1][i][k]);
+    for (var i = 0; i < json[0].length; i++) {
+      for (var k = 0; k < json[1][i].length; k++) {
+        batch.insert(json[0][i], json[1][i][k]);
       }
     }
 
-    await batch.commit(continueOnError:false,noResult:true);
+    await batch.commit(continueOnError: false, noResult: true);
 
     print('RESTORE BACKUP');
   }
-
 }
-

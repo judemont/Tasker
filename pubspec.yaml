@@ -43,6 +43,7 @@ dependencies:
   path: any
   url_launcher: ^6.2.5
   encrypt: ^5.0.3
+  share_plus: ^8.0.2
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
   flutter_test:

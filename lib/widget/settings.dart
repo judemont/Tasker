@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-
 
 class Settings extends StatefulWidget {
-  const Settings({Key? key});
+  final Function backup;
+  const Settings({Key? key, required this.backup});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -46,7 +45,7 @@ class _SettingsState extends State<Settings> {
                 child: const Column(
                   children: [
                     ListTile(
-                      title: Text("Import from file"),
+                      title: Text("Restore backup"),
                     ),
                   ],
                 ),
@@ -63,10 +62,11 @@ class _SettingsState extends State<Settings> {
               visible: _displayedTabIndex == 2,
               child: Container(
                 margin: const EdgeInsets.only(left: 20),
-                child: const Column(
+                child: Column(
                   children: [
                     ListTile(
-                      title: Text("Export file"),
+                      title: const Text("Backup"),
+                      onTap: () => widget.backup(),
                     ),
                   ],
                 ),
@@ -86,16 +86,16 @@ class _SettingsState extends State<Settings> {
                 child: Column(
                   children: [
                     const ListTile(
-                      title: Text("Tasker is an open source, simple, offline, privacy friendly To-Do app developed with love by Judemont and Rdemont"),
+                      title: Text(
+                          "Tasker is an open source, simple, offline, privacy friendly To-Do app developed with love by Judemont and Rdemont"),
                     ),
                     ListTile(
                       title: const Text(
                         "Source code (GitHub)",
-                        style: TextStyle(
-                          color: Colors.blue
-                        ),
+                        style: TextStyle(color: Colors.blue),
                       ),
-                      onTap: () => launchUrl(Uri.parse('https://github.com/judemont/tasker')),
+                      onTap: () => launchUrl(
+                          Uri.parse('https://github.com/judemont/tasker')),
                     )
                   ],
                 ),
