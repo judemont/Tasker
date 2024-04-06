@@ -3,7 +3,9 @@ import 'package:url_launcher/url_launcher.dart';
 
 class Settings extends StatefulWidget {
   final Function backup;
-  const Settings({Key? key, required this.backup});
+  final Function restore;
+
+  const Settings({Key? key, required this.backup, required this.restore});
 
   @override
   State<Settings> createState() => _SettingsState();
@@ -24,6 +26,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController backupCodeController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -42,10 +46,39 @@ class _SettingsState extends State<Settings> {
               visible: _displayedTabIndex == 1,
               child: Container(
                 margin: const EdgeInsets.only(left: 20),
-                child: const Column(
+                child: Column(
                   children: [
                     ListTile(
-                      title: Text("Restore backup"),
+                      title: const Text("Restore backup"),
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Restore backup"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextField(
+                                controller: backupCodeController,
+                                decoration: const InputDecoration(
+                                    hintText: "Past Backup Code Here"),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                widget.restore(backupCodeController.text);
+                                Navigator.pop(context, 'ok');
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),

@@ -10,8 +10,8 @@ class FloatingNewButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var titleFieldController = TextEditingController();
-    var descriptionFieldController = TextEditingController();
+    TextEditingController titleFieldController = TextEditingController();
+    TextEditingController descriptionFieldController = TextEditingController();
 
     return FloatingActionButton(
       child: const Icon(Icons.add_task),

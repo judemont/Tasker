@@ -51,7 +51,11 @@ class _HomePageState extends State<HomePage> {
                 renameTask: renameTask,
               )
             ]))),
-        endDrawer: Drawer(child: Settings(backup: backup)),
+        endDrawer: Drawer(
+            child: Settings(
+          backup: backup,
+          restore: restore,
+        )),
         drawer: Drawer(
             child: GroupWidget(
           removeGroup: _removeGroup,
@@ -73,6 +77,11 @@ class _HomePageState extends State<HomePage> {
     db.generateBackup().then((String result) {
       Share.share(result);
     });
+  }
+
+  Future<void> restore(String backup) async {
+    DatabaseService db = DatabaseService();
+    db.restoreBackup(backup);
   }
 
   Future<void> _loadTodoFromGroup(int groupId) async {
