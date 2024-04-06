@@ -20,7 +20,6 @@ class TasksWidget extends StatefulWidget {
 }
 
 class _TasksWidgetState extends State<TasksWidget> {
-  Offset _tapPosition = Offset.zero;
   bool displayCompletedTasks = false;
 
   var renameTitleFieldController = TextEditingController();

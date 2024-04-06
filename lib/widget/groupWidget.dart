@@ -4,12 +4,12 @@ import '../services/database.dart';
 
 class GroupWidget extends StatefulWidget {
   final List<Group> groupItems;
-  Function onListChange;
-  Function onTodoChange;
-  int? selectedGroupId;
+  final Function onListChange;
+  final Function onTodoChange;
+  final int? selectedGroupId;
   final Function removeGroup;
 
-  GroupWidget(
+  const GroupWidget(
       {super.key,
       required this.selectedGroupId,
       required this.groupItems,
