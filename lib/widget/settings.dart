@@ -120,7 +120,7 @@ class _SettingsState extends State<Settings> {
                   children: [
                     const ListTile(
                       title: Text(
-                          "Tasker is an open source, simple, offline, privacy friendly To-Do app developed with love by Judemont and Rdemont"),
+                          "Tasker is an open source, simple, offline, privacy friendly To-Do app developed with ❤️ by Judemont and Rdemont"),
                     ),
                     ListTile(
                       title: const Text(
